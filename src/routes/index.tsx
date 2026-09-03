@@ -32,7 +32,7 @@ const NAV = [
   { id: "contact", label: "Contact" },
 ];
 
-const STATS = [
+const STATS: { value: number; prefix?: string; suffix: string; label: string }[] = [
   { value: 10, prefix: "£", suffix: "M+", label: "risk exposure mitigated" },
   { value: 24000, suffix: "+", label: "clients screened for financial crime" },
   { value: 40, suffix: "%", label: "productivity gain via process redesign" },
@@ -289,7 +289,7 @@ function Portfolio() {
     return () => io.disconnect();
   }, []);
 
-  const current = ROLES[role];
+  const current = ROLES[role] ?? ROLES[0]!;
 
   return (
     <div className="rule-grid min-h-screen">
@@ -374,7 +374,7 @@ function Portfolio() {
               <Reveal key={s.label} delay={i * 90}>
                 <div>
                   <div className="font-display text-4xl text-primary md:text-5xl">
-                    <Counter to={s.value} prefix={s.prefix} suffix={s.suffix} />
+                    <Counter to={s.value} prefix={s.prefix ?? ""} suffix={s.suffix} />
                   </div>
                   <p className="mt-2 text-sm leading-snug text-muted-foreground">
                     {s.label}
