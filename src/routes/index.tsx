@@ -134,6 +134,14 @@ const TOOLS = [
       "A clean loan amortisation calculator: tenure, rate and principal in, monthly outgo and interest split out.",
     tags: ["Personal finance", "Modelling", "Product"],
   },
+  {
+    title: "Spend Savvy",
+    kind: "Live web app",
+    href: "https://spend-savvy-1.lovable.app",
+    blurb:
+      "A personal spending tracker that turns daily expenses into clear insights and smarter budgeting habits.",
+    tags: ["Personal finance", "Budgeting", "Product"],
+  },
 ];
 
 const EDUCATION = [
