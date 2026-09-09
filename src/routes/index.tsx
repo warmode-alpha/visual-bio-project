@@ -491,7 +491,7 @@ function Portfolio() {
 
       <main className="relative mx-auto max-w-6xl px-6 pt-16" id="top">
         {/* Hero */}
-        <section className="relative grid min-h-[92svh] grid-cols-1 items-center gap-14 py-24 md:py-32 lg:grid-cols-[1.4fr_1fr]">
+        <section className="relative flex min-h-[92svh] flex-col justify-center py-24 md:py-32">
           <div ref={heroParallax} className="min-w-0">
             <Reveal>
               <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
@@ -499,19 +499,28 @@ function Portfolio() {
                 <ScrambleText text="whoami — finance · risk · analytics" trigger="view" />
               </p>
             </Reveal>
-            <h1 className="mt-7 font-display uppercase leading-[0.88] text-[clamp(3.4rem,13vw,10.5rem)]">
-              <SplitText text="Arihant" active={revealed} delay={150} className="acid-shimmer" />
-              <br />
-              <span className="text-outline">
-                <SplitText text="Bengani" active={revealed} delay={420} />
-              </span>
-            </h1>
-            <Reveal delay={760}>
+
+            <div className="mt-7 flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
+              <h1 className="font-display uppercase leading-[0.88] text-[clamp(3.4rem,12vw,9.5rem)]">
+                <SplitText text="Arihant" active={revealed} delay={150} className="acid-shimmer" />
+                <br />
+                <span className="text-outline">
+                  <SplitText text="Bengani" active={revealed} delay={420} />
+                </span>
+              </h1>
+              <Reveal delay={760} className="shrink-0">
+                <div className="w-32 sm:w-40 md:w-44 lg:w-52">
+                  <Portrait />
+                </div>
+              </Reveal>
+            </div>
+
+            <Reveal delay={840}>
               <p className="mt-7 font-mono text-sm text-accent md:text-base">
                 <Typewriter words={TYPE_WORDS} />
               </p>
             </Reveal>
-            <Reveal delay={840}>
+            <Reveal delay={920}>
               <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
                 Finance and risk professional with 3.4+ years at{" "}
                 <span className="text-foreground">Tide</span> and{" "}
@@ -521,7 +530,7 @@ function Portfolio() {
                 technology.
               </p>
             </Reveal>
-            <Reveal delay={920}>
+            <Reveal delay={1000}>
               <div className="mt-10 flex flex-wrap items-center gap-3">
                 <Magnetic strength={0.15}>
                   <a href="#work" className="btn-primary">
@@ -550,7 +559,7 @@ function Portfolio() {
 
             <div className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
               {STATS.map((s, i) => (
-                <Reveal key={s.label} delay={980 + i * 90}>
+                <Reveal key={s.label} delay={1060 + i * 90}>
                   <div className="border-t border-border pt-4">
                     <div className="font-display text-4xl text-primary md:text-5xl">
                       <Counter to={s.value} prefix={s.prefix ?? ""} suffix={s.suffix} />
@@ -564,12 +573,8 @@ function Portfolio() {
             </div>
           </div>
 
-          <Reveal delay={1350} className="lg:order-2">
-            <Portrait />
-          </Reveal>
-
-          <Reveal delay={1420} className="lg:order-3">
-            <div className="mt-2 flex items-center gap-4">
+          <Reveal delay={1420}>
+            <div className="mt-16 flex items-center gap-4">
               <div className="scroll-hint" aria-hidden="true" />
               <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
                 scroll
