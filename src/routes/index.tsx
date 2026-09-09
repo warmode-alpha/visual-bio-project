@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import portraitAsset from "@/assets/portrait.png.asset.json";
 import { Reveal, Counter } from "@/components/Reveal";
 import {
   Preloader,
