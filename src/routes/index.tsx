@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
 
 const EMAIL = "arihant.bengani2027@mastersunion.org";
 const GMAIL_COMPOSE = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}`;
-const PORTRAIT_SRC = "/portrait.jpg";
+const PORTRAIT_SRC = portraitAsset.url;
 
 const NAV = [
   { id: "work", label: "Work", hint: "1" },
