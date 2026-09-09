@@ -1,35 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Reveal, Counter } from "@/components/Reveal";
+import {
+  Preloader,
+  CustomCursor,
+  GrainOverlay,
+  ScrollProgress,
+  Magnetic,
+  TiltCard,
+  Marquee,
+  SplitText,
+  Typewriter,
+  ScrambleText,
+  useParallax,
+  CommandPalette,
+  LiveClock,
+  CopyText,
+  type CommandItem,
+} from "@/components/interactive";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Arihant Bengani — Finance & Risk Analyst" },
+      { title: "Arihant Bengani — Risk, Compliance & Data" },
       {
         name: "description",
         content:
           "Portfolio of Arihant Bengani: finance, risk and compliance professional (Tide, JPMorgan Chase) building data tools, dashboards and equity research.",
       },
-      { property: "og:title", content: "Arihant Bengani — Finance & Risk Analyst" },
+      { property: "og:title", content: "Arihant Bengani — Risk, Compliance & Data" },
       {
         property: "og:description",
         content:
           "3.4+ years across Tide and JPMorgan Chase. £10M+ risk exposure mitigated, 24,000+ clients screened. Tools, dashboards and research.",
       },
       { property: "og:type", content: "profile" },
+      { property: "og:image", content: "/portrait.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Portfolio,
 });
 
+const EMAIL = "arihant.bengani2027@mastersunion.org";
+const GMAIL_COMPOSE = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}`;
+const PORTRAIT_SRC = "/portrait.jpg";
+
 const NAV = [
-  { id: "work", label: "Work" },
-  { id: "tools", label: "Tools" },
-  { id: "education", label: "Education" },
-  { id: "beyond", label: "Beyond" },
-  { id: "contact", label: "Contact" },
+  { id: "work", label: "Work", hint: "1" },
+  { id: "tools", label: "Tools", hint: "2" },
+  { id: "education", label: "Education", hint: "3" },
+  { id: "beyond", label: "Beyond", hint: "4" },
+  { id: "contact", label: "Contact", hint: "5" },
 ];
 
 const STATS: { value: number; prefix?: string; suffix: string; label: string }[] = [
@@ -117,6 +139,7 @@ const TOOLS = [
     blurb:
       "A built-from-scratch interactive artifact turning a business question into an explorable, self-contained web app.",
     tags: ["Prototyping", "AI-assisted build", "Storytelling"],
+    span: "md:col-span-4",
   },
   {
     title: "Tableau Fire — Dashboard Playground",
@@ -124,7 +147,8 @@ const TOOLS = [
     href: "https://tableau-fire.lovable.app/",
     blurb:
       "A visual analytics surface for slicing datasets the way a Tableau workbook would, built and shipped on the web.",
-    tags: ["Tableau", "Data viz", "Analytics"],
+    tags: ["Tableau", "Data viz"],
+    span: "md:col-span-2",
   },
   {
     title: "EMI Calculator",
@@ -132,7 +156,8 @@ const TOOLS = [
     href: "https://emi-calculator-c59h.bolt.host/",
     blurb:
       "A clean loan amortisation calculator: tenure, rate and principal in, monthly outgo and interest split out.",
-    tags: ["Personal finance", "Modelling", "Product"],
+    tags: ["Personal finance", "Modelling"],
+    span: "md:col-span-2",
   },
   {
     title: "Spend Savvy",
@@ -141,6 +166,7 @@ const TOOLS = [
     blurb:
       "A personal spending tracker that turns daily expenses into clear insights and smarter budgeting habits.",
     tags: ["Personal finance", "Budgeting", "Product"],
+    span: "md:col-span-4",
   },
 ];
 
@@ -190,15 +216,7 @@ const CERTS = [
 ];
 
 const SKILLS = {
-  Business: [
-    "AML",
-    "KYC",
-    "World Check",
-    "World Compliance",
-    "LexisNexis",
-    "RDC",
-    "Passfort",
-  ],
+  Business: ["AML", "KYC", "World Check", "World Compliance", "LexisNexis", "RDC", "Passfort"],
   Technical: [
     "Tableau",
     "Power BI",
@@ -209,6 +227,27 @@ const SKILLS = {
     "Financial Modelling",
   ],
 };
+
+const TICKER_ITEMS = [
+  "AML SCREENING",
+  "KYC / RE-KYC",
+  "SANCTIONS SCREENING",
+  "TABLEAU",
+  "POWER BI",
+  "FINANCIAL MODELLING",
+  "EQUITY RESEARCH",
+  "PROCESS REDESIGN",
+  "RISK FRAMEWORKS",
+  "DATA ANALYSIS",
+];
+
+const TYPE_WORDS = [
+  "Risk & Compliance Analyst",
+  "KYC / AML Specialist",
+  "Process Redesigner",
+  "Data-Driven Finance Builder",
+  "Equity Research Enthusiast",
+];
 
 const BEYOND = [
   {
@@ -245,41 +284,119 @@ const BEYOND = [
   },
 ];
 
+const COMMANDS: CommandItem[] = [
+  ...NAV.map((n) => ({
+    id: n.id,
+    label: n.label,
+    group: "Sections",
+    href: `#${n.id}`,
+    hint: n.hint,
+  })),
+  {
+    id: "email",
+    label: "Email me",
+    group: "Actions",
+    href: "mailto:arihant.bengani2027@mastersunion.org",
+    hint: "M",
+    external: false,
+  },
+  {
+    id: "linkedin",
+    label: "Open LinkedIn ↗",
+    group: "Actions",
+    href: "https://www.linkedin.com/in/arihant-bengani/",
+    hint: "L",
+    external: true,
+  },
+  {
+    id: "artifact",
+    label: "Interactive Analysis Artifact ↗",
+    group: "Projects",
+    href: "https://claude.ai/public/artifacts/0af509bf-2284-4eec-b5ec-2c531ba27a04",
+    hint: "↗",
+    external: true,
+  },
+  {
+    id: "tableau-fire",
+    label: "Tableau Fire ↗",
+    group: "Projects",
+    href: "https://tableau-fire.lovable.app/",
+    hint: "↗",
+    external: true,
+  },
+];
+
 function Section({
   id,
+  numeral,
   eyebrow,
   title,
   children,
 }: {
   id: string;
+  numeral: string;
   eyebrow: string;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24 border-t border-border py-20 md:py-28">
-      <Reveal>
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
-          {eyebrow}
+    <section id={id} className="relative scroll-mt-24 border-t border-border py-20 md:py-28">
+      <span className="ghost-numeral" aria-hidden="true">
+        {numeral}
+      </span>
+      <Reveal className="relative">
+        <p className="flex items-center gap-4 font-mono text-xs uppercase tracking-[0.3em] text-primary">
+          <span className="opacity-60">{numeral}</span>
+          <span aria-hidden="true" className="h-px w-10 bg-primary/50" />
+          <ScrambleText text={eyebrow} trigger="view" />
         </p>
-        <h2 className="mt-3 font-display text-4xl leading-tight md:text-5xl">{title}</h2>
+        <h2 className="mt-4 font-display text-5xl uppercase leading-none md:text-7xl">{title}</h2>
       </Reveal>
-      <div className="mt-12">{children}</div>
+      <div className="relative mt-12">{children}</div>
     </section>
   );
 }
 
-function Portfolio() {
-  const [active, setActive] = useState("work");
-  const [role, setRole] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
+function Portrait() {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="portrait-frame aspect-[4/5] w-full max-w-[340px] justify-self-center md:max-w-none">
+      {failed ? (
+        <div className="portrait-mono h-full w-full text-[7rem]" aria-hidden="true">
+          AB
+        </div>
+      ) : (
+        <img
+          src={PORTRAIT_SRC}
+          alt="Portrait of Arihant Bengani"
+          className="portrait-img"
+          loading="eager"
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
+      )}
+      <div className="portrait-chip">
+        <span>
+          ID — <span className="text-foreground">ARIHANT.BENGANI</span>
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="ok-dot" aria-hidden="true" />
+          VERIFIED
+        </span>
+      </div>
+    </div>
+  );
+}
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+function Portfolio() {
+  const [revealed, setRevealed] = useState(false);
+  const [active, setActive] = useState("work");
+  const [openRoles, setOpenRoles] = useState<Set<number>>(() => new Set([0]));
+  const [cmdOpen, setCmdOpen] = useState(false);
+
+  const handleReveal = useCallback(() => setRevealed(true), []);
+
+  const heroParallax = useParallax<HTMLDivElement>(28);
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -297,26 +414,54 @@ function Portfolio() {
     return () => io.disconnect();
   }, []);
 
-  const current = ROLES[role] ?? ROLES[0]!;
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+      const hit = NAV.find((n) => n.hint === e.key);
+      if (hit) {
+        document.getElementById(hit.id)?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const toggleRole = (i: number) => {
+    setOpenRoles((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) {
+        next.delete(i);
+      } else {
+        next.add(i);
+      }
+      return next;
+    });
+  };
 
   return (
-    <div className="rule-grid min-h-screen">
-      <header
-        className={`sticky top-0 z-50 backdrop-blur transition-colors ${
-          scrolled ? "border-b border-border bg-background/85" : "bg-transparent"
-        }`}
-      >
-        <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <a href="#top" className="font-display text-lg tracking-wide">
-            Arihant<span className="text-primary">.</span>
+    <div className="rule-grid relative min-h-screen overflow-x-clip">
+      <div className="crt" aria-hidden="true" />
+      <Preloader name="ARIHANT BENGANI // PORTFOLIO" onReveal={handleReveal} />
+      <CustomCursor />
+      <GrainOverlay />
+      <ScrollProgress />
+      <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} items={COMMANDS} />
+
+      {/* Top nav bar */}
+      <header className="nav-bar fixed inset-x-0 top-0 z-50">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3.5">
+          <a href="#top" className="font-mono text-sm font-semibold tracking-[0.2em]">
+            AB<span className="text-primary">_</span>RISK/DATA
           </a>
-          <ul className="hidden gap-7 text-sm text-muted-foreground md:flex">
+          <ul className="hidden items-center gap-6 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground md:flex">
             {NAV.map((n) => (
               <li key={n.id}>
                 <a
                   href={`#${n.id}`}
                   className={`link-underline transition-colors hover:text-foreground ${
-                    active === n.id ? "text-foreground" : ""
+                    active === n.id ? "text-primary" : ""
                   }`}
                 >
                   {n.label}
@@ -324,140 +469,205 @@ function Portfolio() {
               </li>
             ))}
           </ul>
-          <a
-            href="mailto:arihant.bengani2027@mastersunion.org"
-            className="rounded-full border border-primary/50 px-4 py-1.5 text-sm text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            Get in touch
-          </a>
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setCmdOpen(true)}
+              className="hidden items-center gap-2 border border-input px-2.5 py-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:border-primary hover:text-foreground sm:flex"
+              aria-label="Open command menu"
+            >
+              <span>⌘K</span>
+            </button>
+            <Magnetic strength={0.25}>
+              <a href="#contact" className="btn-primary !px-4 !py-1.5 !text-[11px]">
+                Get in touch
+              </a>
+            </Magnetic>
+          </div>
         </nav>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6" id="top">
+      <main className="relative mx-auto max-w-6xl px-6 pt-16" id="top">
         {/* Hero */}
-        <section className="py-20 md:py-32">
-          <Reveal>
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-accent">
-              Finance · Risk · Analytics
-            </p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-6 font-display text-6xl leading-[0.95] md:text-8xl">
-              Arihant
+        <section className="relative grid min-h-[92svh] grid-cols-1 items-center gap-14 py-24 md:py-32 lg:grid-cols-[1.4fr_1fr]">
+          <div ref={heroParallax} className="min-w-0">
+            <Reveal>
+              <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
+                <span className="text-primary">$</span>{" "}
+                <ScrambleText text="whoami — finance · risk · analytics" trigger="view" />
+              </p>
+            </Reveal>
+            <h1 className="mt-7 font-display uppercase leading-[0.88] text-[clamp(3.4rem,13vw,10.5rem)]">
+              <SplitText text="Arihant" active={revealed} delay={150} className="acid-shimmer" />
               <br />
-              <span className="text-brass">Bengani</span>
+              <span className="text-outline">
+                <SplitText text="Bengani" active={revealed} delay={420} />
+              </span>
             </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Finance and risk professional with 3.4+ years at{" "}
-              <span className="text-foreground">Tide</span> and{" "}
-              <span className="text-foreground">JPMorgan Chase</span> — mitigating
-              £10M+ in exposure, screening 24,000+ clients, and redesigning the
-              processes behind 2,000+ CDD/EDD reviews. Now at Masters' Union, building
-              tools where finance meets technology.
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href="#tools"
-                className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
-              >
-                See what I've built
-              </a>
-              <a
-                href="https://www.linkedin.com/in/arihant-bengani/"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-border px-5 py-2.5 text-sm transition-colors hover:border-primary hover:text-primary"
-              >
-                LinkedIn
-              </a>
-            </div>
-          </Reveal>
-
-          <div className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
-            {STATS.map((s, i) => (
-              <Reveal key={s.label} delay={i * 90}>
-                <div>
-                  <div className="font-display text-4xl text-primary md:text-5xl">
-                    <Counter to={s.value} prefix={s.prefix ?? ""} suffix={s.suffix} />
-                  </div>
-                  <p className="mt-2 text-sm leading-snug text-muted-foreground">
-                    {s.label}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        {/* Work */}
-        <Section id="work" eyebrow="Experience" title="Where I've worked">
-          <div className="grid gap-8 md:grid-cols-[minmax(0,220px)_1fr]">
-            <div className="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible">
-              {ROLES.map((r, i) => (
-                <button
-                  key={r.company}
-                  onClick={() => setRole(i)}
-                  className={`shrink-0 rounded-xl border px-4 py-3 text-left text-sm transition-all md:w-full ${
-                    role === i
-                      ? "border-primary/60 bg-secondary text-foreground"
-                      : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  <span className="block font-medium">{r.company}</span>
-                  <span className="mt-0.5 block font-mono text-[11px] opacity-70">
-                    {r.period}
+            <Reveal delay={760}>
+              <p className="mt-7 font-mono text-sm text-accent md:text-base">
+                <Typewriter words={TYPE_WORDS} />
+              </p>
+            </Reveal>
+            <Reveal delay={840}>
+              <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+                Finance and risk professional with 3.4+ years at{" "}
+                <span className="text-foreground">Tide</span> and{" "}
+                <span className="text-foreground">JPMorgan Chase</span> — mitigating £10M+ in
+                exposure, screening 24,000+ clients, and redesigning the processes behind 2,000+
+                CDD/EDD reviews. Now at Masters' Union, building tools where finance meets
+                technology.
+              </p>
+            </Reveal>
+            <Reveal delay={920}>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <Magnetic strength={0.15}>
+                  <a href="#work" className="btn-primary">
+                    See the work ↓
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.15}>
+                  <a
+                    href="https://www.linkedin.com/in/arihant-bengani/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-ghost"
+                  >
+                    LinkedIn ↗
+                  </a>
+                </Magnetic>
+                <span className="ml-1 inline-flex items-center gap-2 border border-input px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                   </span>
-                </button>
+                  Status: open to conversations
+                </span>
+              </div>
+            </Reveal>
+
+            <div className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+              {STATS.map((s, i) => (
+                <Reveal key={s.label} delay={980 + i * 90}>
+                  <div className="border-t border-border pt-4">
+                    <div className="font-display text-4xl text-primary md:text-5xl">
+                      <Counter to={s.value} prefix={s.prefix ?? ""} suffix={s.suffix} />
+                    </div>
+                    <p className="mt-2 font-mono text-xs leading-snug text-muted-foreground">
+                      {s.label}
+                    </p>
+                  </div>
+                </Reveal>
               ))}
             </div>
+          </div>
 
-            <div key={role} className="surface animate-in fade-in slide-in-from-bottom-2 p-7 duration-500 md:p-9">
-              <h3 className="font-display text-2xl">{current.role}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {current.full} · {current.place} · {current.period}
-              </p>
-              <div className="mt-7 space-y-7">
-                {current.groups.map((g) => (
-                  <div key={g.title}>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
-                      {g.title}
-                    </p>
-                    <ul className="mt-3 space-y-2.5">
-                      {g.points.map((p) => (
-                        <li key={p} className="flex gap-3 text-sm leading-relaxed">
-                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                          <span className="text-muted-foreground">{p}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+          <Reveal delay={1350} className="lg:order-2">
+            <Portrait />
+          </Reveal>
+
+          <Reveal delay={1420} className="lg:order-3">
+            <div className="mt-2 flex items-center gap-4">
+              <div className="scroll-hint" aria-hidden="true" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                scroll
+              </span>
             </div>
+          </Reveal>
+        </section>
+
+        {/* Terminal ticker */}
+        <div className="-mx-6 border-y border-border py-3 md:-mx-12">
+          <Marquee duration={38}>
+            {TICKER_ITEMS.map((item) => (
+              <span
+                key={item}
+                className="mx-4 flex items-center gap-4 font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                <span className="text-primary">▸</span>
+                {item}
+                <span className="text-muted-foreground/40">//</span>
+              </span>
+            ))}
+          </Marquee>
+        </div>
+
+        {/* Work — accordion rows */}
+        <Section id="work" numeral="01" eyebrow="Experience" title="Where I've worked">
+          <div>
+            {ROLES.map((r, i) => {
+              const open = openRoles.has(i);
+              return (
+                <Reveal key={r.company} delay={i * 60}>
+                  <div className="acc-row" data-open={open}>
+                    <button
+                      type="button"
+                      className="acc-head"
+                      onClick={() => toggleRole(i)}
+                      aria-expanded={open}
+                    >
+                      <span className="acc-index">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="acc-title">{r.company}</span>
+                      <span className="acc-plus" aria-hidden="true">
+                        +
+                      </span>
+                    </button>
+                    <div className="acc-body" data-open={open}>
+                      <div>
+                        <div className="px-1 pb-8 md:pl-[4.5rem]">
+                          <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">
+                            {r.role}
+                          </p>
+                          <p className="mt-1 font-mono text-xs text-muted-foreground">
+                            {r.full} · {r.place} · {r.period}
+                          </p>
+                          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                            {r.groups.map((g) => (
+                              <div key={g.title}>
+                                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+                                  {g.title}
+                                </p>
+                                <ul className="mt-3 space-y-2.5">
+                                  {g.points.map((p) => (
+                                    <li key={p} className="flex gap-3 text-sm leading-relaxed">
+                                      <span className="mt-2 h-1 w-1 shrink-0 bg-primary" />
+                                      <span className="text-muted-foreground">{p}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </Section>
 
-        {/* Tools */}
-        <Section id="tools" eyebrow="Artifacts" title="Tools I've built">
-          <div className="grid gap-5">
+        {/* Tools — bento grid */}
+        <Section id="tools" numeral="02" eyebrow="Artifacts" title="Tools I've built">
+          <div className="grid gap-5 md:grid-cols-6">
             {TOOLS.map((t, i) => (
-              <Reveal key={t.title} delay={i * 90}>
-                <a
-                  href={t.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group surface block p-7 transition-all hover:-translate-y-1 hover:border-primary/50 md:p-9"
-                >
-                  <div className="flex items-start justify-between gap-6">
+              <Reveal key={t.title} delay={i * 90} className={t.span}>
+                <TiltCard className="surface acid-edge group h-full p-7 md:p-8">
+                  <a
+                    href={t.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-full flex-col items-start justify-between gap-6"
+                  >
                     <div>
-                      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
-                        {t.kind}
-                      </p>
-                      <h3 className="mt-3 font-display text-2xl md:text-3xl">
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                          {t.kind}
+                        </p>
+                        <p className="font-mono text-[11px] text-muted-foreground/60">T-0{i + 1}</p>
+                      </div>
+                      <h3 className="mt-3 font-display text-2xl uppercase md:text-3xl">
                         {t.title}
                       </h3>
                       <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
@@ -467,32 +677,36 @@ function Portfolio() {
                         {t.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-full border border-border px-3 py-1 text-[11px] text-muted-foreground"
+                            className="border border-input px-3 py-1 font-mono text-[11px] text-muted-foreground"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
                     </div>
-                    <span className="mt-1 text-2xl text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                    <span className="mt-2 font-mono text-2xl text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
                       ↗
                     </span>
-                  </div>
-                </a>
+                  </a>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
         </Section>
 
         {/* Education */}
-        <Section id="education" eyebrow="Education" title="How I got here">
-          <div className="relative border-l border-border pl-7">
+        <Section id="education" numeral="03" eyebrow="Education" title="How I got here">
+          <div className="relative border-l border-border pl-8">
             {EDUCATION.map((e, i) => (
               <Reveal key={e.school} delay={i * 80}>
                 <div className="relative pb-10">
-                  <span className="absolute -left-[34px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background" />
+                  <span
+                    className="timeline-dot h-2.5 w-2.5"
+                    style={{ left: "-37px", top: "8px" }}
+                    aria-hidden="true"
+                  />
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                    <h3 className="font-display text-2xl">{e.school}</h3>
+                    <h3 className="font-display text-2xl uppercase">{e.school}</h3>
                     <span className="font-mono text-[11px] text-muted-foreground">
                       {e.period} · {e.place}
                     </span>
@@ -503,7 +717,7 @@ function Portfolio() {
                       {e.notes.map((n) => (
                         <li
                           key={n}
-                          className="rounded-full bg-secondary px-3 py-1 text-[11px] text-muted-foreground"
+                          className="bg-secondary px-3 py-1 font-mono text-[11px] text-muted-foreground"
                         >
                           {n}
                         </li>
@@ -525,7 +739,7 @@ function Portfolio() {
                   {CERTS.map(([name, meta]) => (
                     <li key={name} className="text-sm">
                       <span className="block">{name}</span>
-                      <span className="text-xs text-muted-foreground">{meta}</span>
+                      <span className="font-mono text-xs text-muted-foreground">{meta}</span>
                     </li>
                   ))}
                 </ul>
@@ -538,12 +752,14 @@ function Portfolio() {
                 </p>
                 {Object.entries(SKILLS).map(([group, items]) => (
                   <div key={group} className="mt-5">
-                    <p className="text-xs text-muted-foreground">{group}</p>
+                    <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+                      {group}
+                    </p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {items.map((s) => (
                         <span
                           key={s}
-                          className="rounded-md border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary hover:text-primary"
+                          className="border border-input px-2.5 py-1 font-mono text-xs transition-colors hover:border-primary hover:text-primary"
                         >
                           {s}
                         </span>
@@ -551,9 +767,9 @@ function Portfolio() {
                     </div>
                   </div>
                 ))}
-                <div className="mt-6 border-t border-border pt-4 text-xs text-muted-foreground">
-                  GMAT 730 (Q50, V40) · Multiple performance awards at Tide ·
-                  Appreciated at the BCIPS national conference for an academic paper
+                <div className="mt-6 border-t border-border pt-4 font-mono text-xs text-muted-foreground">
+                  GMAT 730 (Q50, V40) · Multiple performance awards at Tide · Appreciated at the
+                  BCIPS national conference for an academic paper
                 </div>
               </div>
             </Reveal>
@@ -561,71 +777,113 @@ function Portfolio() {
         </Section>
 
         {/* Beyond */}
-        <Section id="beyond" eyebrow="Beyond the desk" title="Research, leadership & impact">
+        <Section id="beyond" numeral="04" eyebrow="Beyond the desk" title="Research & impact">
           <div className="grid gap-5 md:grid-cols-2">
             {BEYOND.map((b, i) => (
               <Reveal key={b.title} delay={i * 80}>
-                <div className="surface h-full p-7 transition-colors hover:border-primary/40">
-                  <h3 className="font-display text-xl leading-snug">{b.title}</h3>
+                <TiltCard className="surface acid-edge h-full p-7" max={4}>
+                  <h3 className="font-display text-xl uppercase leading-snug">{b.title}</h3>
                   <p className="mt-1 font-mono text-[11px] text-accent">{b.meta}</p>
                   <ul className="mt-4 space-y-2">
                     {b.points.map((p) => (
                       <li key={p} className="flex gap-3 text-sm leading-relaxed">
-                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                        <span className="mt-2 h-1 w-1 shrink-0 bg-primary" />
                         <span className="text-muted-foreground">{p}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
         </Section>
 
         {/* Contact */}
-        <Section id="contact" eyebrow="Contact" title="Let's talk">
+        <Section id="contact" numeral="05" eyebrow="Contact" title="Let's talk">
           <Reveal>
-            <div className="surface p-8 md:p-12">
-              <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-                Open to conversations on risk, compliance, fintech products and
+            <TiltCard className="surface acid-edge p-8 md:p-14" max={3}>
+              <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                Have a role, a project, or a question?
+              </p>
+              <p className="mt-4 font-display text-4xl uppercase leading-[0.95] md:text-6xl">
+                Open to conversations on <span className="text-acid">risk, compliance</span> &
                 anything data-driven in finance.
               </p>
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {[
-                  {
-                    label: "Email",
-                    value: "arihant.bengani2027@mastersunion.org",
-                    href: "mailto:arihant.bengani2027@mastersunion.org",
-                  },
-                  { label: "Phone", value: "+91 89193 30532", href: "tel:+918919330532" },
-                  {
-                    label: "LinkedIn",
-                    value: "/in/arihant-bengani",
-                    href: "https://www.linkedin.com/in/arihant-bengani/",
-                  },
-                ].map((c) => (
-                  <a
-                    key={c.label}
-                    href={c.href}
-                    target={c.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noreferrer"
-                    className="group rounded-xl border border-border p-4 transition-colors hover:border-primary/60"
-                  >
-                    <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
-                      {c.label}
-                    </p>
-                    <p className="mt-2 break-words text-sm transition-colors group-hover:text-primary">
-                      {c.value}
-                    </p>
+              <div className="mt-10 flex flex-wrap items-center gap-3">
+                <Magnetic strength={0.15}>
+                  <a href={GMAIL_COMPOSE} target="_blank" rel="noreferrer" className="btn-primary">
+                    Email me ↗
                   </a>
-                ))}
+                </Magnetic>
+                <Magnetic strength={0.15}>
+                  <a href={`mailto:${EMAIL}`} className="btn-ghost">
+                    Open mail app
+                  </a>
+                </Magnetic>
               </div>
-            </div>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                <div className="border border-input p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                    Email — click to copy
+                  </p>
+                  <CopyText
+                    value={EMAIL}
+                    className="mt-2 block max-w-full text-left font-mono text-sm hover:text-primary"
+                  >
+                    <span className="break-all">{EMAIL}</span>
+                  </CopyText>
+                </div>
+                <div className="border border-input p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                    Phone — click to copy
+                  </p>
+                  <CopyText
+                    value="+918919330532"
+                    className="mt-2 block max-w-full text-left font-mono text-sm hover:text-primary"
+                  >
+                    +91 89193 30532
+                  </CopyText>
+                </div>
+                <a
+                  href="https://www.linkedin.com/in/arihant-bengani/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group border border-input p-4 transition-colors hover:border-primary/60"
+                >
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                    LinkedIn
+                  </p>
+                  <p className="mt-2 break-words font-mono text-sm transition-colors group-hover:text-primary">
+                    /in/arihant-bengani ↗
+                  </p>
+                </a>
+              </div>
+            </TiltCard>
           </Reveal>
         </Section>
 
-        <footer className="border-t border-border py-10 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Arihant Bengani · Hyderabad / Gurugram
+        {/* Footer */}
+        <footer className="border-t border-border pb-10 pt-8">
+          <div className="footer-mark text-center">Arihant Bengani</div>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-muted-foreground">
+            <span>© {new Date().getFullYear()} Arihant Bengani · Hyderabad / Gurugram</span>
+            <span className="hidden items-center gap-2 sm:flex">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
+              Local time — <LiveClock timeZone="Asia/Kolkata" /> IST
+            </span>
+            <Magnetic strength={0.3}>
+              <a
+                href="#top"
+                aria-label="Back to top"
+                className="inline-flex h-10 w-10 items-center justify-center border border-input transition-colors hover:border-primary hover:text-primary"
+              >
+                ↑
+              </a>
+            </Magnetic>
+          </div>
         </footer>
       </main>
     </div>
